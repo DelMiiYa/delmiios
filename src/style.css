@@ -238,6 +238,10 @@
   padding: 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html, body {
   width: 100%;
   height: 100%;
@@ -999,7 +1003,7 @@ input, textarea, select {
   bottom: calc(var(--taskbar-height) + 8px);
   width: 340px;
   max-height: 520px;
-  display: flex;
+  display: none;
   flex-direction: column;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -1010,6 +1014,10 @@ input, textarea, select {
   z-index: 1050;
   overflow: hidden;
   animation: startMenuOpen 0.18s ease;
+}
+
+.start-menu.start-menu--open {
+  display: flex;
 }
 
 @keyframes startMenuOpen {
@@ -2988,9 +2996,9 @@ html.has-custom-cursor .custom-cursor {
 }
 
 .cursor-triangle {
-  fill: var(--cursor-color, #ff2b2b);
-  stroke: #ffffff;
-  stroke-width: 0.85px;
+  fill: none;
+  stroke: var(--cursor-color, #ff2b2b);
+  stroke-width: 2px;
   stroke-linejoin: round;
 }
 
