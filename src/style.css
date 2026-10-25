@@ -20,6 +20,15 @@
   --accent: #38bdf8;
   --accent-glow: rgba(56, 189, 248, 0.35);
 
+  /* CRT Monitor Bezel Defaults: Cyber Dark */
+  --bezel-bg: #141722;
+  --bezel-border: #23293a;
+  --bezel-highlight: #353d54;
+  --bezel-shadow: rgba(0, 0, 0, 0.85);
+
+  /* Custom Cursor Color */
+  --cursor-color: #ff2b2b;
+
   /* Theme Defaults: Cyber Dark */
   --bg-surface: rgba(15, 23, 42, 0.92);
   --bg-surface-solid: #0f172a;
@@ -48,6 +57,10 @@
 
 /* Theme: Retro Teal (Classic 90s Desktop) */
 [data-theme='retro-teal'] {
+  --bezel-bg: #d5d0be;
+  --bezel-border: #b5af9c;
+  --bezel-highlight: #ebe7d8;
+  --bezel-shadow: rgba(0, 0, 0, 0.55);
   --bg-surface: #c0c0c0;
   --bg-surface-solid: #c0c0c0;
   --bg-elevated: #dcdcdc;
@@ -73,6 +86,10 @@
 
 /* Theme: Sunset Dusk */
 [data-theme='sunset-dusk'] {
+  --bezel-bg: #22122b;
+  --bezel-border: #381944;
+  --bezel-highlight: #542267;
+  --bezel-shadow: rgba(0, 0, 0, 0.88);
   --bg-surface: rgba(35, 18, 56, 0.9);
   --bg-surface-solid: #231238;
   --bg-elevated: #3c1e54;
@@ -92,6 +109,10 @@
 
 /* Theme: Matrix Terminal */
 [data-theme='matrix'] {
+  --bezel-bg: #030c05;
+  --bezel-border: #0c2612;
+  --bezel-highlight: #174521;
+  --bezel-shadow: rgba(0, 0, 0, 0.95);
   --font-sans: var(--font-mono);
   --bg-surface: rgba(4, 18, 8, 0.94);
   --bg-surface-solid: #041208;
@@ -112,6 +133,10 @@
 
 /* Theme: Clean Slate */
 [data-theme='clean-slate'] {
+  --bezel-bg: #182232;
+  --bezel-border: #28374c;
+  --bezel-highlight: #3c4f6b;
+  --bezel-shadow: rgba(0, 0, 0, 0.8);
   --bg-surface: rgba(30, 41, 59, 0.92);
   --bg-surface-solid: #1e293b;
   --bg-elevated: #334155;
@@ -134,6 +159,10 @@
    ----------------------------------------------------------------------------- */
 
 [data-mode='light'] {
+  --bezel-bg: #e5e0d3;
+  --bezel-border: #c8c2b1;
+  --bezel-highlight: #f8f6ee;
+  --bezel-shadow: rgba(0, 0, 0, 0.35);
   --bg-surface: rgba(255, 255, 255, 0.95);
   --bg-surface-solid: #ffffff;
   --bg-elevated: #f1f5f9;
@@ -271,37 +300,51 @@ input, textarea, select {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #0c0e14;
+  background: #000000;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  transition: padding 0.3s ease, border-radius 0.3s ease;
+  transition: padding 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
 }
 
+/* Chunky retro-modern tactile bezel on desktop */
 .crt-monitor--bezel-on {
-  padding: 12px 14px 10px 14px;
-  background: radial-gradient(circle at 50% 30%, #1f2530 0%, #131720 70%, #0c0e14 100%);
-  border: 10px solid #282f3d;
-  border-radius: 20px;
-  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8), 0 20px 60px rgba(0, 0, 0, 0.9);
+  padding: 22px 26px 44px;
+  background: var(--bezel-bg);
+  border: 10px solid var(--bezel-border);
+  border-radius: 28px;
+  box-shadow:
+    inset 0 3px 0 var(--bezel-highlight),
+    inset 0 -4px 14px var(--bezel-shadow),
+    0 25px 60px var(--bezel-shadow);
 }
 
 .crt-screen {
   flex: 1;
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
-  background: #000;
-  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.85);
+  border-radius: 0;
+  background: #000000;
   display: flex;
   flex-direction: column;
+  transition: border-radius 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Inner recessed screen rim around #crt-screen */
+.crt-monitor--bezel-on .crt-screen {
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 35px rgba(0, 0, 0, 0.9),
+    inset 0 4px 14px rgba(0, 0, 0, 0.85),
+    0 0 0 2px var(--bezel-border);
+}
+
+/* Subtle phosphor text glow */
 .crt-screen--glow {
-  box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.95), 0 0 20px rgba(56, 189, 248, 0.08);
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.16);
 }
 
-/* CRT Overlays */
+/* CRT Overlays: Scanlines + RGB phosphor sub-pixel tint */
 .crt-overlay-scanlines {
   position: absolute;
   inset: 0;
@@ -309,15 +352,31 @@ input, textarea, select {
   z-index: 800;
   opacity: 0;
   transition: opacity 0.25s ease;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.32) 50%),
-    linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.015), rgba(0, 0, 255, 0.03));
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 1.5px,
+      rgba(0, 0, 0, 0.35) 1.5px,
+      rgba(0, 0, 0, 0.35) 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.035) 0px,
+      rgba(255, 0, 0, 0.035) 2px,
+      rgba(0, 255, 0, 0.02) 2px,
+      rgba(0, 255, 0, 0.02) 4px,
+      rgba(0, 0, 255, 0.035) 4px,
+      rgba(0, 0, 255, 0.035) 6px
+    );
   background-size: 100% 3px, 6px 100%;
 }
 
 .crt-screen--scanlines .crt-overlay-scanlines {
-  opacity: 0.85;
+  opacity: 0.88;
 }
 
+/* CRT Overlays: Radial vignette + subtle diagonal glass reflection in top-left */
 .crt-overlay-vignette {
   position: absolute;
   inset: 0;
@@ -325,20 +384,33 @@ input, textarea, select {
   z-index: 801;
   opacity: 0;
   transition: opacity 0.25s ease;
-  background: radial-gradient(circle at 50% 50%, transparent 68%, rgba(0, 0, 0, 0.65) 100%);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 64%, rgba(0, 0, 0, 0.65) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 18%, transparent 40%);
 }
 
 .crt-screen--vignette .crt-overlay-vignette {
   opacity: 1;
 }
 
+/* CRT Overlays: Subtle opacity flicker + rolling horizontal scan band */
 .crt-overlay-flicker {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 802;
   opacity: 0;
-  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.crt-overlay-flicker::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.032) 50%, transparent 100%);
+  animation: crtRollingScan 8s linear infinite;
 }
 
 .crt-screen--flicker .crt-overlay-flicker {
@@ -346,27 +418,95 @@ input, textarea, select {
   animation: crtFlicker 0.15s infinite;
 }
 
+@keyframes crtRollingScan {
+  0% { transform: translateY(-100px); }
+  100% { transform: translateY(100vh); }
+}
+
 @keyframes crtFlicker {
   0% { opacity: 0.015; }
-  50% { opacity: 0.035; }
+  50% { opacity: 0.038; }
   100% { opacity: 0.015; }
 }
 
-/* CRT Power Animation Overlay */
+/* CRT Power Expand / Collapse Keyframe Animations */
 .crt-power-anim {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 999;
+  z-index: 9999;
+  opacity: 0;
 }
 
-/* CRT Chin */
+.crt-power-anim--on {
+  opacity: 1;
+  background: #ffffff;
+  animation: crtPowerOnAnim 0.42s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes crtPowerOnAnim {
+  0% {
+    transform: scale(0.005, 0.005);
+    opacity: 1;
+    background: #ffffff;
+    box-shadow: 0 0 30px #ffffff;
+  }
+  35% {
+    transform: scale(1, 0.005);
+    opacity: 1;
+    background: #e0f2fe;
+    box-shadow: 0 0 20px #38bdf8;
+  }
+  70% {
+    transform: scale(1, 1);
+    opacity: 0.85;
+    background: #bae6fd;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 0;
+    background: transparent;
+  }
+}
+
+.crt-power-anim--off {
+  opacity: 1;
+  background: #000000;
+  animation: crtPowerOffAnim 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes crtPowerOffAnim {
+  0% {
+    transform: scale(1, 1);
+    opacity: 0.9;
+    background: #bae6fd;
+  }
+  40% {
+    transform: scale(1, 0.006);
+    opacity: 1;
+    background: #e0f2fe;
+    box-shadow: 0 0 20px #38bdf8;
+  }
+  80% {
+    transform: scale(0.006, 0.006);
+    opacity: 1;
+    background: #ffffff;
+    box-shadow: 0 0 30px #ffffff;
+  }
+  100% {
+    transform: scale(0, 0);
+    opacity: 1;
+    background: #000000;
+  }
+}
+
+/* CRT Bezel Chin: Brand Plate Badge + Power Button & LED */
 .crt-bezel-chin {
-  height: 40px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 10px 14px 0;
   background: transparent;
   flex-shrink: 0;
 }
@@ -377,53 +517,68 @@ input, textarea, select {
   gap: 8px;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
-.crt-brand-led-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 6px #22c55e;
+.crt-brand-emblem {
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.crt-brand-model {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 3px;
+  letter-spacing: 0.8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .crt-power-btn {
   display: flex;
   align-items: center;
-  gap: 7px;
-  background: #1e293b;
-  border: 1px solid #334155;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  gap: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #cbd5e1;
+  letter-spacing: 1.2px;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .crt-power-btn:hover {
-  background: #334155;
-  color: #f8fafc;
+  background: var(--bg-elevated-hover);
+  border-color: var(--accent);
+}
+
+.crt-power-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .crt-power-led {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #22c55e;
-  box-shadow: 0 0 6px #22c55e;
+  box-shadow: 0 0 8px #22c55e, 0 0 2px #22c55e;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .crt-power-led--sleeping {
   background: #f59e0b;
-  box-shadow: 0 0 6px #f59e0b;
+  box-shadow: 0 0 8px #f59e0b, 0 0 2px #f59e0b;
 }
 
 /* -----------------------------------------------------------------------------
@@ -2645,7 +2800,7 @@ input, textarea, select {
 
 .wallpaper-desc {
   font-size: 0.7rem;
-  color: var(--text-secondary), #94a3b8;
+  color: var(--text-secondary, #94a3b8);
   line-height: 1.25;
 }
 
@@ -2777,11 +2932,91 @@ input:checked + .slider:before {
 }
 
 /* -----------------------------------------------------------------------------
-   MOBILE RESPONSIVENESS (<= 768px)
+   CUSTOM TRIANGLE CURSOR & CONTINUOUS CANVAS TRAIL
    ----------------------------------------------------------------------------- */
 
-@media (max-width: 768px) {
-  .crt-monitor {
+/* Native cursor suppression when custom cursor is active on fine pointers */
+html.has-custom-cursor,
+html.has-custom-cursor body,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* Full-viewport canvas trail overlay */
+.cursor-trail-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none !important;
+  z-index: 999999;
+}
+
+/* Custom cursor wrapper: positioned at pointer coords */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none !important;
+  z-index: 1000000;
+  will-change: transform;
+  display: none;
+}
+
+html.has-custom-cursor .custom-cursor {
+  display: block;
+}
+
+/* Rotor element: rotates around the exact geometric center (16px, 16px) */
+.custom-cursor-rotor {
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 16px 16px;
+}
+
+.custom-cursor-svg {
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.95)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cursor-triangle {
+  fill: var(--cursor-color, #ff2b2b);
+  stroke: #ffffff;
+  stroke-width: 0.85px;
+  stroke-linejoin: round;
+}
+
+.cursor-dot {
+  fill: var(--cursor-color, #ff2b2b);
+  stroke: #ffffff;
+  stroke-width: 0.85px;
+}
+
+/* Interactive hover feedback (scale ~1.18) */
+.custom-cursor--hover .custom-cursor-svg {
+  transform: scale(1.18);
+}
+
+/* Pressed feedback (scale ~0.88) */
+.custom-cursor--pressed .custom-cursor-svg {
+  transform: scale(0.88);
+}
+
+/* -----------------------------------------------------------------------------
+   MOBILE RESPONSIVENESS (<= 768px or max-height <= 520px)
+   ----------------------------------------------------------------------------- */
+
+@media (max-width: 768px), (max-height: 520px) {
+  .crt-monitor,
+  .crt-monitor--bezel-on {
     padding: 0 !important;
     border: none !important;
     border-radius: 0 !important;
@@ -2792,8 +3027,10 @@ input:checked + .slider:before {
     display: none !important;
   }
 
-  .crt-screen {
+  .crt-screen,
+  .crt-monitor--bezel-on .crt-screen {
     border-radius: 0 !important;
+    box-shadow: none !important;
   }
 
   .start-menu {
@@ -2815,10 +3052,43 @@ input:checked + .slider:before {
 
   .os-window-titlebar {
     cursor: default;
+    height: 42px;
   }
 
   .win-btn--maximize {
     display: none;
+  }
+
+  /* Touch-friendly hit targets (>= 40px) */
+  .win-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .taskbar-start-btn {
+    min-height: 40px;
+    padding: 0 16px;
+  }
+
+  .taskbar-win-btn {
+    min-height: 40px;
+    max-width: 120px;
+    padding: 0 8px;
+  }
+
+  .taskbar-tray-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .start-menu-item {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+
+  .start-footer-btn {
+    min-height: 40px;
+    padding: 8px 14px;
   }
 
   .desktop-icons {
@@ -2826,6 +3096,10 @@ input:checked + .slider:before {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     grid-template-rows: none;
     width: 100%;
+  }
+
+  .desktop-icon {
+    min-height: 72px;
   }
 
   .explorer-layout {
@@ -2846,6 +3120,7 @@ input:checked + .slider:before {
 
   .explorer-folder-btn {
     width: auto;
+    min-height: 40px;
     white-space: nowrap;
   }
 
@@ -2864,9 +3139,17 @@ input:checked + .slider:before {
     align-items: flex-start;
   }
 
-  .taskbar-win-btn {
-    max-width: 120px;
-    padding: 0 8px;
+  .terminal-chip {
+    min-height: 40px;
+    padding: 6px 12px;
+  }
+
+  .accent-swatch-btn {
+    min-height: 40px;
+  }
+
+  .setting-toggle-row {
+    min-height: 48px;
   }
 }
 
@@ -2887,7 +3170,30 @@ input:checked + .slider:before {
     opacity: 0 !important;
   }
 
+  .crt-overlay-flicker::before {
+    animation: none !important;
+    display: none !important;
+  }
+
+  .crt-power-anim--on {
+    animation: crtPowerQuickFade 0.15s ease forwards !important;
+  }
+
+  .crt-power-anim--off {
+    animation: crtPowerQuickFadeOut 0.15s ease forwards !important;
+  }
+
   .shutdown-content {
     animation: none !important;
   }
+}
+
+@keyframes crtPowerQuickFade {
+  0% { opacity: 1; background: #000000; }
+  100% { opacity: 0; background: transparent; }
+}
+
+@keyframes crtPowerQuickFadeOut {
+  0% { opacity: 0; background: transparent; }
+  100% { opacity: 1; background: #000000; }
 }

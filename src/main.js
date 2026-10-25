@@ -8,6 +8,8 @@ import { createDesktopIcons } from './core/desktop.js';
 import { StartMenu } from './core/startMenu.js';
 import { createTaskbar } from './core/taskbar.js';
 import { runBootSequence } from './core/boot.js';
+import { initCRT } from './core/crt.js';
+import { initCursor } from './core/cursor.js';
 import { aboutApp } from './apps/about.js';
 import { projectsApp } from './apps/projects.js';
 import { skillsApp } from './apps/skills.js';
@@ -52,8 +54,15 @@ function initOS() {
       <!-- CRT Bottom Chin (Brand Badge + Power LED Button) -->
       <div class="crt-bezel-chin">
         <div class="crt-brand-badge" id="crt-brand-badge">
-          <span class="crt-brand-led-dot" aria-hidden="true"></span>
+          <span class="crt-brand-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8"/>
+              <path d="M12 17v4"/>
+            </svg>
+          </span>
           <span class="crt-brand-text">${profile.system.osName}</span>
+          <span class="crt-brand-model">CRT-17 SYNC</span>
         </div>
         <button type="button" class="crt-power-btn" id="crt-power-btn" aria-label="Toggle Monitor Power or Wake" title="Monitor Power">
           <span class="crt-power-led" id="crt-power-led"></span>
@@ -63,15 +72,39 @@ function initOS() {
     </div>
   `;
 
+  const monitorEl = appRoot.querySelector('#crt-monitor');
   const screenEl = appRoot.querySelector('#crt-screen');
-  const desktopEl = appRoot.querySelector('#os-desktop');
+  const powerBtn = appRoot.querySelector('#crt-power-btn');
+  const powerAnimEl = appRoot.querySelector('#crt-power-anim');
   const desktopLayer = appRoot.querySelector('#os-desktop-layer');
   const windowLayer = appRoot.querySelector('#os-window-layer');
-  const powerBtn = appRoot.querySelector('#crt-power-btn');
   const shutdownOverlay = appRoot.querySelector('#shutdown-overlay');
 
   // Initialize unified settings and apply theme / CRT classes
   settingsStore.apply();
+
+  // Instantiate CRT Controller
+  const crtController = initCRT({
+    monitorEl,
+    screenEl,
+    powerBtnEl: powerBtn,
+    powerAnimEl,
+    settingsStore,
+    onWake: () => {
+      startMenu.wakeSystem();
+    }
+  });
+
+  // Instantiate Custom Triangle Cursor & Continuous Canvas Trail
+  const cursorController = initCursor({
+    settingsStore
+  });
+
+  // Expose on window for inspection / debugging if needed
+  if (typeof window !== 'undefined') {
+    window.crtController = crtController;
+    window.cursorController = cursorController;
+  }
 
   // Instantiate Window Manager
   const windowManager = new WindowManager(windowLayer);
@@ -81,18 +114,23 @@ function initOS() {
     windowManager.registerApp(app);
   });
 
-  // Restart Handler: replays boot sequence and restores desktop session
+  // Restart Handler: replays CRT power-off/on sequence and restores desktop session
   const handleRestart = () => {
     windowManager.closeAllWindows();
-    runBootSequence(screenEl, () => {
-      if (windowManager.appsRegistry.has('about')) {
-        windowManager.openApp('about');
-      }
-    });
+    crtController.playPowerOff();
+    setTimeout(() => {
+      crtController.playPowerOn();
+      runBootSequence(screenEl, () => {
+        if (windowManager.appsRegistry.has('about')) {
+          windowManager.openApp('about');
+        }
+      });
+    }, 380);
   };
 
   // Instantiate Start Menu & Taskbar inside #crt-screen
   const startMenu = new StartMenu(screenEl, windowManager, handleRestart);
+  startMenu.setCRTController(crtController);
   createTaskbar(screenEl, windowManager, startMenu);
 
   // Initialize Desktop Shortcut Icons grid
@@ -118,9 +156,9 @@ function initOS() {
     });
   }
 
-  // Run initial boot sequence inside the CRT screen
+  // Run initial CRT power-on and boot sequence inside the CRT screen
+  crtController.playPowerOn();
   runBootSequence(screenEl, () => {
-    // If the 'about' app is registered (in M2), automatically launch it
     if (windowManager.appsRegistry.has('about')) {
       windowManager.openApp('about');
     }
