@@ -1,8 +1,8 @@
 # Project Status Tracker — `delmiios`
 
 ## Current State
-- **Active Milestone**: **M3 Experience — Review Gate** (`M3` build complete; awaiting Review Agent audit)
-- **Next Prompt to Dispatch**: `.agents/review-agent-prompt.md` -> **Review Agent** (auditing **M3** and writing `.agents/reviews/review-m3.md`)
+- **Active Milestone**: **M4 Hardening — Phase 1: Automated Test Suite** (Ready for Dispatch)
+- **Next Prompt to Dispatch**: `.agents/test-agent-prompt.md` -> **Test Agent**
 - **Git Repository**: `D:\delmiios` (`main` branch, synced with `origin/main` at `https://github.com/DelMiiYa/delmiios.git`).
 
 ---
@@ -14,8 +14,8 @@
 | **Scaffolding & Plan** | Passed (`package.json`, `vite.config.js`, `.gitignore`, `.agents/*`) | N/A | 0 | **Completed** |
 | **M1: Core** | **Passed** (`npm run build` ✓) | **PASS** ([`review-m1.md`](./reviews/review-m1.md)) | 0 | **Completed** |
 | **M2: Apps** | **Passed** (`npm run build` ✓) | **PASS** ([`review-m2.md`](./reviews/review-m2.md)) | 0 | **Completed** |
-| **M3: Experience** | **Passed** (`npm run build` ✓ 21 modules, 0 errors/warnings) | **In Review** (`.agents/reviews/review-m3.md`) | 0 | **Under Review** |
-| **M4: Hardening** | Pending | Pending `.agents/reviews/review-m4.md` | 0 | Queued |
+| **M3: Experience** | **Passed** (`npm run build` ✓) | **PASS** ([`review-m3.md`](./reviews/review-m3.md)) | 0 | **Completed** |
+| **M4: Hardening** | Pending Test Agent & UI Agent (`README.md`) | Pending `.agents/reviews/review-m4.md` | 0 | **Next Up** |
 
 ---
 
@@ -28,5 +28,6 @@
 ---
 
 ## Open Findings
-- **Blockers / Majors**: `0` (awaiting `.agents/reviews/review-m3.md`)
-- **M1/M2 Minor Polish Items**: Resolved in M3 (`crtController.setSleeping` wired in `startMenu.js`, `.wallpaper-desc` CSS fallback fixed in `style.css`, dynamic registry lookup wired in `terminal.js`).
+- **Blockers / Majors**: `0`
+- **Minor Notes for M4**:
+  - In `tests/unit/`, mock `<canvas>.getContext('2d')` if testing `CursorController` DOM methods in Vitest.
