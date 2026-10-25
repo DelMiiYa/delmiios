@@ -155,14 +155,27 @@ export class StartMenu {
     }
   }
 
+  /**
+   * Sets the CRT Controller instance to sync power animations and hardware LED.
+   * @param {import('./crt.js').CRTController} crtController
+   */
+  setCRTController(crtController) {
+    this.crtController = crtController;
+  }
+
   suspendSystem() {
     const overlay = document.getElementById('shutdown-overlay');
     if (overlay) {
       overlay.classList.add('active');
     }
-    const powerLed = document.getElementById('crt-power-led');
-    if (powerLed) {
-      powerLed.classList.add('crt-power-led--sleeping');
+    if (this.crtController) {
+      this.crtController.playPowerOff();
+      this.crtController.setSleeping(true);
+    } else {
+      const powerLed = document.getElementById('crt-power-led');
+      if (powerLed) {
+        powerLed.classList.add('crt-power-led--sleeping');
+      }
     }
   }
 
@@ -172,9 +185,14 @@ export class StartMenu {
       overlay.classList.remove('active');
       sound.playStartup();
     }
-    const powerLed = document.getElementById('crt-power-led');
-    if (powerLed) {
-      powerLed.classList.remove('crt-power-led--sleeping');
+    if (this.crtController) {
+      this.crtController.setSleeping(false);
+      this.crtController.playPowerOn();
+    } else {
+      const powerLed = document.getElementById('crt-power-led');
+      if (powerLed) {
+        powerLed.classList.remove('crt-power-led--sleeping');
+      }
     }
   }
 

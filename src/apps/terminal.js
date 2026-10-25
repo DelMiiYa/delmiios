@@ -433,7 +433,10 @@ export const terminalApp = {
         }
 
         case 'open': {
-          const validApps = ['about', 'projects', 'skills', 'contact', 'terminal', 'settings'];
+          const validApps =
+            windowManager && typeof windowManager.getRegisteredApps === 'function'
+              ? windowManager.getRegisteredApps().map((a) => a.id)
+              : ['about', 'projects', 'skills', 'contact', 'terminal', 'settings'];
           const targetApp = (args[0] || '').toLowerCase();
           if (!targetApp) {
             appendHtml(
@@ -620,7 +623,14 @@ export const terminalApp = {
         sound.playClick();
 
         const currentVal = inputEl.value;
-        const suggestions = getAutocompleteSuggestions(currentVal);
+        const currentAppIds =
+          windowManager && typeof windowManager.getRegisteredApps === 'function'
+            ? windowManager.getRegisteredApps().map((a) => a.id)
+            : undefined;
+        const suggestions = getAutocompleteSuggestions(
+          currentVal,
+          currentAppIds ? { appIds: currentAppIds } : undefined
+        );
 
         if (suggestions.length === 1) {
           // Exactly 1 match: complete input directly
