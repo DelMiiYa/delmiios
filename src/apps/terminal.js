@@ -11,10 +11,10 @@
  * - getAutocompleteSuggestions(rawInput, context)
  */
 
-import { profile, getVirtualFiles } from '../data/profile.js';
-import { icons } from '../core/icons.js';
-import { sound } from '../core/sound.js';
-import { settingsStore, VALID_THEMES } from '../core/settings.js';
+import { profile, getVirtualFiles } from "../data/profile.js";
+import { icons } from "../core/icons.js";
+import { sound } from "../core/sound.js";
+import { settingsStore, VALID_THEMES } from "../core/settings.js";
 
 /**
  * Escapes HTML characters safely without DOM dependencies (works in Node/Vitest and browser).
@@ -22,13 +22,13 @@ import { settingsStore, VALID_THEMES } from '../core/settings.js';
  * @returns {string}
  */
 export function escapeHtml(str) {
-  if (str == null) return '';
+  if (str == null) return "";
   return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 /**
@@ -36,11 +36,11 @@ export function escapeHtml(str) {
  * @param {string} raw
  * @returns {{ raw: string, trimmed: string, cmd: string, args: string[], argString: string }}
  */
-export function parseCommandInput(raw = '') {
-  const str = raw == null ? '' : String(raw);
+export function parseCommandInput(raw = "") {
+  const str = raw == null ? "" : String(raw);
   const trimmed = str.trim();
   if (!trimmed) {
-    return { raw: str, trimmed: '', cmd: '', args: [], argString: '' };
+    return { raw: str, trimmed: "", cmd: "", args: [], argString: "" };
   }
   const parts = trimmed.split(/\s+/);
   const cmd = parts[0].toLowerCase();
@@ -55,13 +55,13 @@ export function parseCommandInput(raw = '') {
  * @returns {string}
  */
 function findCommonPrefix(strings) {
-  if (!strings || strings.length === 0) return '';
+  if (!strings || strings.length === 0) return "";
   if (strings.length === 1) return strings[0];
   let prefix = strings[0];
   for (let i = 1; i < strings.length; i++) {
     while (!strings[i].startsWith(prefix)) {
       prefix = prefix.slice(0, -1);
-      if (!prefix) return '';
+      if (!prefix) return "";
     }
   }
   return prefix;
@@ -78,42 +78,52 @@ function findCommonPrefix(strings) {
  * @returns {string[]}
  */
 export function getAutocompleteSuggestions(
-  rawInput = '',
+  rawInput = "",
   contextOrAppIds = {},
   maybeThemes,
-  maybeFiles
+  maybeFiles,
 ) {
   let commands = [
-    'help',
-    'about',
-    'projects',
-    'skills',
-    'contact',
-    'whoami',
-    'date',
-    'ls',
-    'cat',
-    'open',
-    'theme',
-    'sound',
-    'crt',
-    'cursor',
-    'clear',
-    'exit'
+    "help",
+    "about",
+    "projects",
+    "skills",
+    "contact",
+    "whoami",
+    "date",
+    "ls",
+    "cat",
+    "open",
+    "theme",
+    "sound",
+    "crt",
+    "cursor",
+    "clear",
+    "exit",
   ];
-  let appIds = ['about', 'projects', 'skills', 'contact', 'terminal', 'settings'];
-  let themeIds = [...VALID_THEMES, 'dark', 'light'];
+  let appIds = [
+    "about",
+    "projects",
+    "skills",
+    "contact",
+    "terminal",
+    "settings",
+  ];
+  let themeIds = [...VALID_THEMES, "dark", "light"];
   let fileNames = Object.keys(getVirtualFiles(profile));
 
   if (Array.isArray(contextOrAppIds)) {
     appIds = contextOrAppIds;
     if (Array.isArray(maybeThemes)) themeIds = maybeThemes;
     if (Array.isArray(maybeFiles)) fileNames = maybeFiles;
-  } else if (contextOrAppIds && typeof contextOrAppIds === 'object') {
-    if (Array.isArray(contextOrAppIds.commands)) commands = contextOrAppIds.commands;
+  } else if (contextOrAppIds && typeof contextOrAppIds === "object") {
+    if (Array.isArray(contextOrAppIds.commands))
+      commands = contextOrAppIds.commands;
     if (Array.isArray(contextOrAppIds.appIds)) appIds = contextOrAppIds.appIds;
-    if (Array.isArray(contextOrAppIds.themeIds)) themeIds = contextOrAppIds.themeIds;
-    if (Array.isArray(contextOrAppIds.fileNames)) fileNames = contextOrAppIds.fileNames;
+    if (Array.isArray(contextOrAppIds.themeIds))
+      themeIds = contextOrAppIds.themeIds;
+    if (Array.isArray(contextOrAppIds.fileNames))
+      fileNames = contextOrAppIds.fileNames;
   }
 
   const raw = String(rawInput);
@@ -121,7 +131,7 @@ export function getAutocompleteSuggestions(
   const withoutLeading = raw.slice(leadingSpaces.length);
 
   // If typing the first token (no space after the command yet)
-  if (!withoutLeading.includes(' ')) {
+  if (!withoutLeading.includes(" ")) {
     const token = withoutLeading.toLowerCase();
     if (!token) {
       return commands.map((c) => `${leadingSpaces}${c}`);
@@ -132,40 +142,40 @@ export function getAutocompleteSuggestions(
   }
 
   // If a command and at least one space has been typed
-  const spaceIndex = withoutLeading.indexOf(' ');
+  const spaceIndex = withoutLeading.indexOf(" ");
   const cmd = withoutLeading.slice(0, spaceIndex).toLowerCase();
   const argPart = withoutLeading.slice(spaceIndex + 1);
   const argPrefix = argPart.trimStart().toLowerCase();
   const prefixCmd = `${leadingSpaces}${cmd} `;
 
   switch (cmd) {
-    case 'open':
+    case "open":
       return appIds
         .filter((app) => app.toLowerCase().startsWith(argPrefix))
         .map((app) => `${prefixCmd}${app}`);
 
-    case 'theme':
+    case "theme":
       return themeIds
         .filter((theme) => theme.toLowerCase().startsWith(argPrefix))
         .map((theme) => `${prefixCmd}${theme}`);
 
-    case 'cat':
+    case "cat":
       return fileNames
         .filter((file) => file.toLowerCase().startsWith(argPrefix))
         .map((file) => `${prefixCmd}${file}`);
 
-    case 'sound':
-      return ['on', 'off']
+    case "sound":
+      return ["on", "off"]
         .filter((opt) => opt.startsWith(argPrefix))
         .map((opt) => `${prefixCmd}${opt}`);
 
-    case 'crt':
-      return ['on', 'off', 'frame', 'scanlines', 'vignette', 'flicker']
+    case "crt":
+      return ["on", "off", "frame", "scanlines", "vignette", "flicker"]
         .filter((opt) => opt.startsWith(argPrefix))
         .map((opt) => `${prefixCmd}${opt}`);
 
-    case 'cursor':
-      return ['on', 'off', 'trail on', 'trail off']
+    case "cursor":
+      return ["on", "off", "trail on", "trail off"]
         .filter((opt) => opt.startsWith(argPrefix))
         .map((opt) => `${prefixCmd}${opt}`);
 
@@ -175,11 +185,11 @@ export function getAutocompleteSuggestions(
 }
 
 export const terminalApp = {
-  id: 'terminal',
+  id: "terminal",
   title: `Terminal — ${profile.username}@${profile.hostname}`,
-  shortTitle: 'Terminal',
-  desktopLabel: 'Terminal',
-  description: 'Interactive command-line shell with autocomplete',
+  shortTitle: "Terminal",
+  desktopLabel: "Terminal",
+  description: "Interactive command-line shell with autocomplete",
   icon: icons.terminal,
   defaultWidth: 690,
   defaultHeight: 460,
@@ -187,9 +197,9 @@ export const terminalApp = {
   render(container, ctx) {
     const { openApp, close, windowManager } = ctx || {};
     const navApp = (appId, payload) => {
-      if (typeof openApp === 'function') {
+      if (typeof openApp === "function") {
         openApp(appId, payload);
-      } else if (windowManager && typeof windowManager.openApp === 'function') {
+      } else if (windowManager && typeof windowManager.openApp === "function") {
         windowManager.openApp(appId, payload);
       }
     };
@@ -216,7 +226,7 @@ export const terminalApp = {
         </div>
 
         <div class="terminal-output" id="terminal-output" role="log" aria-live="polite">
-          <div class="term-line term-line--accent">${profile.system.osName} Shell [Version 2.4.0]</div>
+          <div class="term-line term-line--accent">${profile.system.osName} Shell</div>
           <div class="term-line term-line--muted">Type <span class="term-cmd-highlight">help</span> for a list of available commands, or press <span class="term-cmd-highlight">Tab</span> for autocomplete.</div>
           <div class="term-line term-line--muted">Type <span class="term-cmd-highlight">open &lt;app&gt;</span> to launch any desktop application window.</div>
           <br />
@@ -237,14 +247,14 @@ export const terminalApp = {
       </div>
     `;
 
-    const outputEl = container.querySelector('#terminal-output');
-    const formEl = container.querySelector('#terminal-form');
-    const inputEl = container.querySelector('#terminal-input');
-    const wrapperEl = container.querySelector('#terminal-wrapper');
+    const outputEl = container.querySelector("#terminal-output");
+    const formEl = container.querySelector("#terminal-form");
+    const inputEl = container.querySelector("#terminal-input");
+    const wrapperEl = container.querySelector("#terminal-wrapper");
 
     function appendHtml(html) {
-      const block = document.createElement('div');
-      block.className = 'term-block';
+      const block = document.createElement("div");
+      block.className = "term-block";
       block.innerHTML = html;
       outputEl.appendChild(block);
       outputEl.scrollTop = outputEl.scrollHeight;
@@ -257,8 +267,8 @@ export const terminalApp = {
       // Echo command line with escaped content
       appendHtml(
         `<div class="term-line"><span class="terminal-prompt">${promptString}</span> ${escapeHtml(
-          trimmed
-        )}</div>`
+          trimmed,
+        )}</div>`,
       );
 
       if (!trimmed) return;
@@ -268,7 +278,7 @@ export const terminalApp = {
       historyIndex = history.length;
 
       switch (cmd) {
-        case 'help':
+        case "help":
           appendHtml(`
             <div class="term-line term-line--accent">DelMiiOS Shell Commands:</div>
             <div class="term-table">
@@ -292,15 +302,19 @@ export const terminalApp = {
           `);
           break;
 
-        case 'about': {
-          const summaryText = (profile.about.summary || []).map(escapeHtml).join('<br/><br/>');
-          const interestsText = (profile.about.interests || []).map(escapeHtml).join(', ');
+        case "about": {
+          const summaryText = (profile.about.summary || [])
+            .map(escapeHtml)
+            .join("<br/><br/>");
+          const interestsText = (profile.about.interests || [])
+            .map(escapeHtml)
+            .join(", ");
           appendHtml(`
             <div class="term-line term-line--accent">${escapeHtml(profile.name)} — ${escapeHtml(
-            profile.role
-          )}</div>
+              profile.role,
+            )}</div>
             <div class="term-line term-line--muted">📍 Location: ${escapeHtml(
-              profile.location
+              profile.location,
             )} | Status: ${escapeHtml(profile.status)}</div>
             <br />
             <div class="term-line">${summaryText}</div>
@@ -310,7 +324,7 @@ export const terminalApp = {
           break;
         }
 
-        case 'projects':
+        case "projects":
           appendHtml(`
             <div class="term-line term-line--accent">Featured Projects (${profile.projects.length}):</div>
             ${profile.projects
@@ -318,28 +332,28 @@ export const terminalApp = {
                 (p, idx) => `
               <div class="term-proj-item">
                 <div><strong>[${idx + 1}] ${escapeHtml(p.title)}</strong> <span class="term-line--muted">(${escapeHtml(
-                  p.category
+                  p.category,
                 )} · ${escapeHtml(p.date)} · ${escapeHtml(p.status)})</span></div>
                 <div class="term-line--muted">    ${escapeHtml(p.description)}</div>
-                <div>    Tech: <span class="term-cmd-highlight">${(p.tech || []).map(escapeHtml).join(', ')}</span></div>
-                ${p.liveUrl && p.liveUrl !== '#' ? `<div>    Live: <a href="${escapeHtml(p.liveUrl)}" target="_blank" rel="noopener noreferrer" class="term-link">${escapeHtml(p.liveUrl)}</a></div>` : ''}
-                ${p.repoUrl ? `<div>    Repo: <a href="${escapeHtml(p.repoUrl)}" target="_blank" rel="noopener noreferrer" class="term-link">${escapeHtml(p.repoUrl)}</a></div>` : ''}
+                <div>    Tech: <span class="term-cmd-highlight">${(p.tech || []).map(escapeHtml).join(", ")}</span></div>
+                ${p.liveUrl && p.liveUrl !== "#" ? `<div>    Live: <a href="${escapeHtml(p.liveUrl)}" target="_blank" rel="noopener noreferrer" class="term-link">${escapeHtml(p.liveUrl)}</a></div>` : ""}
+                ${p.repoUrl ? `<div>    Repo: <a href="${escapeHtml(p.repoUrl)}" target="_blank" rel="noopener noreferrer" class="term-link">${escapeHtml(p.repoUrl)}</a></div>` : ""}
               </div>
-            `
+            `,
               )
-              .join('')}
+              .join("")}
             <div class="term-line term-line--muted">Tip: Type <code>open projects</code> to explore in File Explorer.</div>
           `);
           break;
 
-        case 'skills':
+        case "skills":
           appendHtml(`
             <div class="term-line term-line--accent">System Specs:</div>
             <div class="term-line">  OS: ${escapeHtml(profile.skills.systemSpecs.osName)} (${escapeHtml(
-            profile.skills.systemSpecs.kernel
-          )})</div>
+              profile.skills.systemSpecs.kernel,
+            )})</div>
             <div class="term-line">  Status: ${escapeHtml(
-              profile.skills.systemSpecs.uptime
+              profile.skills.systemSpecs.uptime,
             )} | Memory: ${escapeHtml(profile.skills.systemSpecs.memory)}</div>
             <br />
             <div class="term-line term-line--accent">Proficiencies:</div>
@@ -350,24 +364,24 @@ export const terminalApp = {
               ${cat.items
                 .map((s) => {
                   const filled = Math.round(s.level / 10);
-                  const bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
+                  const bar = "█".repeat(filled) + "░".repeat(10 - filled);
                   return `<div class="term-line">  [${bar}] ${s.level}% — ${escapeHtml(s.name)} <span class="term-line--muted">[${escapeHtml(s.tag)}]</span></div>`;
                 })
-                .join('')}
-            `
+                .join("")}
+            `,
               )
-              .join('')}
+              .join("")}
           `);
           break;
 
-        case 'contact':
+        case "contact":
           appendHtml(`
             <div class="term-line term-line--accent">Contact & Social Channels:</div>
             <div class="term-line">  Email: <a href="mailto:${escapeHtml(
-              profile.contact.email
+              profile.contact.email,
             )}" class="term-link">${escapeHtml(profile.contact.email)}</a></div>
             <div class="term-line">  Office Hours: ${escapeHtml(
-              profile.contact.officeHours || 'N/A'
+              profile.contact.officeHours || "N/A",
             )}</div>
             <div class="term-line">  Note: ${escapeHtml(profile.contact.availabilityNote)}</div>
             <br />
@@ -375,230 +389,269 @@ export const terminalApp = {
               .map(
                 (s) => `
               <div class="term-line">  • <strong>${escapeHtml(s.platform)}:</strong> <a href="${escapeHtml(
-                  s.url
-                )}" target="_blank" rel="noopener noreferrer" class="term-link">${escapeHtml(
-                  s.handle
-                )}</a> <span class="term-line--muted">(${escapeHtml(s.description)})</span></div>
-            `
+                s.url,
+              )}" target="_blank" rel="noopener noreferrer" class="term-link">${escapeHtml(
+                s.handle,
+              )}</a> <span class="term-line--muted">(${escapeHtml(s.description)})</span></div>
+            `,
               )
-              .join('')}
+              .join("")}
           `);
           break;
 
-        case 'whoami':
+        case "whoami":
           appendHtml(
             `<div class="term-line"><strong>${escapeHtml(profile.username)}</strong> (${escapeHtml(
-              profile.name
-            )} — ${escapeHtml(profile.role)})</div>`
+              profile.name,
+            )} — ${escapeHtml(profile.role)})</div>`,
           );
           break;
 
-        case 'date':
+        case "date":
           appendHtml(`<div class="term-line">${new Date().toString()}</div>`);
           break;
 
-        case 'ls': {
+        case "ls": {
           const files = Object.keys(virtualFiles);
           appendHtml(`
             <div class="term-line term-line--accent">Virtual System Files:</div>
-            <div class="term-line">${files.map((f) => `<span class="term-cmd-highlight">${escapeHtml(f)}</span>`).join('   ')}</div>
+            <div class="term-line">${files.map((f) => `<span class="term-cmd-highlight">${escapeHtml(f)}</span>`).join("   ")}</div>
             <div class="term-line term-line--muted">Use <code>cat &lt;file&gt;</code> to read any file.</div>
           `);
           break;
         }
 
-        case 'cat': {
+        case "cat": {
           const fileName = args[0];
           if (!fileName) {
             appendHtml(
-              `<div class="term-line term-line--error">Usage: <code>cat &lt;filename&gt;</code> (e.g. <code>cat About_Me.txt</code>)</div>`
+              `<div class="term-line term-line--error">Usage: <code>cat &lt;filename&gt;</code> (e.g. <code>cat About_Me.txt</code>)</div>`,
             );
           } else {
             // Case-insensitive file matching
             const matchedKey = Object.keys(virtualFiles).find(
-              (k) => k.toLowerCase() === fileName.toLowerCase()
+              (k) => k.toLowerCase() === fileName.toLowerCase(),
             );
             if (matchedKey) {
-              const content = escapeHtml(virtualFiles[matchedKey]).replace(/\n/g, '<br/>');
+              const content = escapeHtml(virtualFiles[matchedKey]).replace(
+                /\n/g,
+                "<br/>",
+              );
               appendHtml(`<div class="term-line">${content}</div>`);
             } else {
               appendHtml(
                 `<div class="term-line term-line--error">cat: ${escapeHtml(
-                  fileName
-                )}: No such file or directory</div>`
+                  fileName,
+                )}: No such file or directory</div>`,
               );
             }
           }
           break;
         }
 
-        case 'open': {
+        case "open": {
           const validApps =
-            windowManager && typeof windowManager.getRegisteredApps === 'function'
+            windowManager &&
+            typeof windowManager.getRegisteredApps === "function"
               ? windowManager.getRegisteredApps().map((a) => a.id)
-              : ['about', 'projects', 'skills', 'contact', 'terminal', 'settings'];
-          const targetApp = (args[0] || '').toLowerCase();
+              : [
+                  "about",
+                  "projects",
+                  "skills",
+                  "contact",
+                  "terminal",
+                  "settings",
+                ];
+          const targetApp = (args[0] || "").toLowerCase();
           if (!targetApp) {
             appendHtml(
               `<div class="term-line">Usage: <code>open &lt;app&gt;</code>. Available apps: ${validApps.join(
-                ', '
-              )}</div>`
+                ", ",
+              )}</div>`,
             );
           } else if (validApps.includes(targetApp)) {
-            appendHtml(`<div class="term-line">Launching <strong>${targetApp}</strong>...</div>`);
+            appendHtml(
+              `<div class="term-line">Launching <strong>${targetApp}</strong>...</div>`,
+            );
             navApp(targetApp);
           } else {
             appendHtml(
               `<div class="term-line term-line--error">Unknown application "${escapeHtml(
-                targetApp
-              )}". Available: ${validApps.join(', ')}</div>`
+                targetApp,
+              )}". Available: ${validApps.join(", ")}</div>`,
             );
           }
           break;
         }
 
-        case 'theme': {
-          const arg = args[0] ? args[0].toLowerCase() : '';
+        case "theme": {
+          const arg = args[0] ? args[0].toLowerCase() : "";
           const currentState = settingsStore.getState();
 
           if (!arg) {
             appendHtml(`
               <div class="term-line">Current theme: <strong>${currentState.theme}</strong> (${currentState.mode} mode)</div>
-              <div class="term-line">Available themes: ${VALID_THEMES.join(', ')}</div>
+              <div class="term-line">Available themes: ${VALID_THEMES.join(", ")}</div>
               <div class="term-line">Available modes: dark, light</div>
               <div class="term-line term-line--muted">Usage: <code>theme &lt;name&gt;</code> (e.g. <code>theme retro-teal</code> or <code>theme light</code>)</div>
             `);
           } else if (VALID_THEMES.includes(arg)) {
             settingsStore.setTheme(arg);
             appendHtml(
-              `<div class="term-line">✓ Visual theme preset changed to: <strong>${arg}</strong></div>`
+              `<div class="term-line">✓ Visual theme preset changed to: <strong>${arg}</strong></div>`,
             );
-          } else if (arg === 'dark' || arg === 'light') {
+          } else if (arg === "dark" || arg === "light") {
             settingsStore.setMode(arg);
             appendHtml(
-              `<div class="term-line">✓ Interface mode set to: <strong>${arg}</strong></div>`
+              `<div class="term-line">✓ Interface mode set to: <strong>${arg}</strong></div>`,
             );
           } else {
             appendHtml(
               `<div class="term-line term-line--error">Invalid theme "${escapeHtml(
-                arg
-              )}". Valid options: ${VALID_THEMES.join(', ')}, dark, light</div>`
+                arg,
+              )}". Valid options: ${VALID_THEMES.join(", ")}, dark, light</div>`,
             );
           }
           break;
         }
 
-        case 'sound': {
-          const arg = args[0] ? args[0].toLowerCase() : '';
+        case "sound": {
+          const arg = args[0] ? args[0].toLowerCase() : "";
           const currentState = settingsStore.getState();
           if (!arg) {
             const next = settingsStore.toggleSound();
             appendHtml(
               `<div class="term-line">System audio effects toggled: <strong>${
-                next ? 'ON' : 'OFF'
-              }</strong></div>`
+                next ? "ON" : "OFF"
+              }</strong></div>`,
             );
-          } else if (arg === 'on') {
+          } else if (arg === "on") {
             settingsStore.setSound(true);
-            appendHtml(`<div class="term-line">✓ System audio effects enabled.</div>`);
-          } else if (arg === 'off') {
+            appendHtml(
+              `<div class="term-line">✓ System audio effects enabled.</div>`,
+            );
+          } else if (arg === "off") {
             settingsStore.setSound(false);
-            appendHtml(`<div class="term-line">✓ System audio effects disabled.</div>`);
+            appendHtml(
+              `<div class="term-line">✓ System audio effects disabled.</div>`,
+            );
           } else {
             appendHtml(
               `<div class="term-line term-line--error">Usage: <code>sound [on|off]</code> (current: ${
-                currentState.soundEnabled ? 'on' : 'off'
-              })</div>`
+                currentState.soundEnabled ? "on" : "off"
+              })</div>`,
             );
           }
           break;
         }
 
-        case 'crt': {
-          const arg = args[0] ? args[0].toLowerCase() : '';
+        case "crt": {
+          const arg = args[0] ? args[0].toLowerCase() : "";
           if (!arg) {
             const isMasterOn = settingsStore.toggleCrtMaster();
             appendHtml(
               `<div class="term-line">CRT master effects toggled: <strong>${
-                isMasterOn ? 'ON' : 'OFF'
-              }</strong></div>`
+                isMasterOn ? "ON" : "OFF"
+              }</strong></div>`,
             );
-          } else if (['on', 'off', 'frame', 'scanlines', 'vignette', 'flicker'].includes(arg)) {
+          } else if (
+            ["on", "off", "frame", "scanlines", "vignette", "flicker"].includes(
+              arg,
+            )
+          ) {
             settingsStore.setCrt(arg);
-            appendHtml(`<div class="term-line">✓ CRT setting updated: <strong>${arg}</strong></div>`);
+            appendHtml(
+              `<div class="term-line">✓ CRT setting updated: <strong>${arg}</strong></div>`,
+            );
           } else {
             appendHtml(
-              `<div class="term-line term-line--error">Usage: <code>crt [on|off|frame|scanlines|vignette|flicker]</code></div>`
+              `<div class="term-line term-line--error">Usage: <code>crt [on|off|frame|scanlines|vignette|flicker]</code></div>`,
             );
           }
           break;
         }
 
-        case 'cursor': {
+        case "cursor": {
           const fullArg = argString.toLowerCase();
           if (!fullArg) {
             const curState = settingsStore.getState();
             const nextCursor = !curState.customCursor;
-            settingsStore.setCursor({ customCursor: nextCursor, cursorTrail: nextCursor });
+            settingsStore.setCursor({
+              customCursor: nextCursor,
+              cursorTrail: nextCursor,
+            });
             appendHtml(
               `<div class="term-line">Custom triangle cursor & trail toggled: <strong>${
-                nextCursor ? 'ON' : 'OFF'
-              }</strong></div>`
+                nextCursor ? "ON" : "OFF"
+              }</strong></div>`,
             );
           } else if (
-            ['on', 'off', 'trail on', 'trail off', 'trail'].includes(fullArg)
+            ["on", "off", "trail on", "trail off", "trail"].includes(fullArg)
           ) {
             settingsStore.setCursor(fullArg);
             appendHtml(
-              `<div class="term-line">✓ Cursor setting updated: <strong>${fullArg}</strong></div>`
+              `<div class="term-line">✓ Cursor setting updated: <strong>${fullArg}</strong></div>`,
             );
           } else {
             appendHtml(
-              `<div class="term-line term-line--error">Usage: <code>cursor [on|off|trail on|trail off]</code></div>`
+              `<div class="term-line term-line--error">Usage: <code>cursor [on|off|trail on|trail off]</code></div>`,
             );
           }
           break;
         }
 
-        case 'clear':
-          outputEl.innerHTML = '';
+        case "clear":
+          outputEl.innerHTML = "";
           break;
 
-        case 'exit':
-          if (typeof close === 'function') {
+        case "exit":
+          if (typeof close === "function") {
             close();
-          } else if (windowManager && typeof windowManager.closeWindow === 'function') {
-            windowManager.closeWindow('terminal');
+          } else if (
+            windowManager &&
+            typeof windowManager.closeWindow === "function"
+          ) {
+            windowManager.closeWindow("terminal");
           }
           break;
 
         default:
           appendHtml(
             `<div class="term-line term-line--error">Command not found: <strong>${escapeHtml(
-              cmd
-            )}</strong>. Type <span class="term-cmd-highlight">help</span> for a list of available commands.</div>`
+              cmd,
+            )}</strong>. Type <span class="term-cmd-highlight">help</span> for a list of available commands.</div>`,
           );
           break;
       }
     }
 
     // Submit handler
-    formEl.addEventListener('submit', (e) => {
+    formEl.addEventListener("submit", (e) => {
       e.preventDefault();
       const val = inputEl.value;
-      inputEl.value = '';
+      inputEl.value = "";
       executeCommand(val);
     });
 
     // Keydown handler: Keystroke sounds, Arrow History, Tab Autocomplete
-    inputEl.addEventListener('keydown', (e) => {
+    inputEl.addEventListener("keydown", (e) => {
       // Keystroke sound
-      if (!['ArrowUp', 'ArrowDown', 'Tab', 'Enter', 'Shift', 'Control', 'Alt'].includes(e.key)) {
+      if (
+        ![
+          "ArrowUp",
+          "ArrowDown",
+          "Tab",
+          "Enter",
+          "Shift",
+          "Control",
+          "Alt",
+        ].includes(e.key)
+      ) {
         sound.playKey();
       }
 
       // History navigation: ArrowUp
-      if (e.key === 'ArrowUp') {
+      if (e.key === "ArrowUp") {
         if (history.length > 0 && historyIndex > 0) {
           e.preventDefault();
           historyIndex -= 1;
@@ -606,7 +659,7 @@ export const terminalApp = {
         }
       }
       // History navigation: ArrowDown
-      else if (e.key === 'ArrowDown') {
+      else if (e.key === "ArrowDown") {
         if (historyIndex < history.length - 1) {
           e.preventDefault();
           historyIndex += 1;
@@ -614,22 +667,22 @@ export const terminalApp = {
         } else if (historyIndex === history.length - 1) {
           e.preventDefault();
           historyIndex = history.length;
-          inputEl.value = '';
+          inputEl.value = "";
         }
       }
       // Tab Autocomplete
-      else if (e.key === 'Tab') {
+      else if (e.key === "Tab") {
         e.preventDefault();
         sound.playClick();
 
         const currentVal = inputEl.value;
         const currentAppIds =
-          windowManager && typeof windowManager.getRegisteredApps === 'function'
+          windowManager && typeof windowManager.getRegisteredApps === "function"
             ? windowManager.getRegisteredApps().map((a) => a.id)
             : undefined;
         const suggestions = getAutocompleteSuggestions(
           currentVal,
-          currentAppIds ? { appIds: currentAppIds } : undefined
+          currentAppIds ? { appIds: currentAppIds } : undefined,
         );
 
         if (suggestions.length === 1) {
@@ -646,15 +699,15 @@ export const terminalApp = {
           appendHtml(
             `<div class="term-line term-line--muted">${suggestions
               .map((s) => escapeHtml(s.trim()))
-              .join('   ')}</div>`
+              .join("   ")}</div>`,
           );
         }
       }
     });
 
     // Quick command buttons
-    container.querySelectorAll('.terminal-chip').forEach((chip) => {
-      chip.addEventListener('click', () => {
+    container.querySelectorAll(".terminal-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
         sound.playClick();
         executeCommand(chip.dataset.cmd);
         inputEl.focus();
@@ -662,12 +715,12 @@ export const terminalApp = {
     });
 
     // Focus input on wrapper click unless selecting text
-    wrapperEl.addEventListener('click', (e) => {
+    wrapperEl.addEventListener("click", (e) => {
       if (
-        typeof window !== 'undefined' &&
+        typeof window !== "undefined" &&
         window.getSelection &&
         window.getSelection().toString().length === 0 &&
-        !e.target.closest('a, button')
+        !e.target.closest("a, button")
       ) {
         inputEl.focus();
       }
@@ -678,7 +731,7 @@ export const terminalApp = {
         if (inputEl) {
           inputEl.focus();
         }
-      }
+      },
     };
-  }
+  },
 };
