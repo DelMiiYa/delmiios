@@ -1,9 +1,9 @@
 # Project Status Tracker — `delmiios`
 
 ## Current State
-- **Active Milestone**: **M1 Core — Review Gate** (`M1` build complete; awaiting Review Agent audit)
-- **Next Prompt to Dispatch**: `.agents/review-agent-prompt.md` -> **Review Agent** (auditing **M1** and writing `.agents/reviews/review-m1.md`)
-- **Git Repository**: Initialized in `D:\delmiios` (`main` branch), remote `origin` set to `https://github.com/DelMiiYa/delmiios.git`.
+- **Active Milestone**: **M2 Apps & Cross-App Navigation** (Ready for Dispatch)
+- **Next Prompt to Dispatch**: `.agents/ui-agent-m2.md` -> **UI Agent**
+- **Git Repository**: `D:\delmiios` (`main` branch, synced with `origin/main` at `https://github.com/DelMiiYa/delmiios.git`).
 
 ---
 
@@ -12,8 +12,8 @@
 | Milestone | Build Status | Review Gate | Open Blockers/Majors | State |
 | :--- | :--- | :--- | :--- | :--- |
 | **Scaffolding & Plan** | Passed (`package.json`, `vite.config.js`, `.gitignore`, `.agents/*`) | N/A | 0 | **Completed** |
-| **M1: Core** | **Passed** (`npm run build` ✓ 13 modules, 0 errors/warnings) | **In Review** (`.agents/reviews/review-m1.md`) | 0 | **Under Review** |
-| **M2: Apps** | Pending | Pending `.agents/reviews/review-m2.md` | 0 | Queued |
+| **M1: Core** | **Passed** (`npm run build` ✓) | **PASS** ([`review-m1.md`](./reviews/review-m1.md)) | 0 | **Completed** |
+| **M2: Apps** | Pending UI Agent | Pending `.agents/reviews/review-m2.md` | 0 | **Next Up** |
 | **M3: Experience** | Pending | Pending `.agents/reviews/review-m3.md` | 0 | Queued |
 | **M4: Hardening** | Pending | Pending `.agents/reviews/review-m4.md` | 0 | Queued |
 
@@ -28,4 +28,6 @@
 ---
 
 ## Open Findings
-- *None (awaiting `.agents/reviews/review-m1.md`).*
+- **Blockers / Majors**: `0`
+- **Minor Notes from M1 Review** (queued for M3 integration):
+  - Route sleep/wake hardware state through `crtController.setSleeping(bool)` in M3 (`src/core/crt.js`).
