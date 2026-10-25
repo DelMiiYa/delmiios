@@ -1,8 +1,8 @@
 # Project Status Tracker — `delmiios`
 
 ## Current State
-- **Active Milestone**: **M4 Hardening — Phase 2: Documentation (`README.md`) & Final Polish** (Ready for Dispatch)
-- **Next Prompt to Dispatch**: `.agents/ui-agent-m4.md` -> **UI Agent**
+- **Active Milestone**: **M4 Review Gate (Final Code, Test & Documentation Audit)** (Ready for Dispatch)
+- **Next Prompt to Dispatch**: `.agents/review-agent-prompt.md` -> **Review Agent** (auditing **M4**)
 - **Git Repository**: `D:\delmiios` (`main` branch, synced with `origin/main` at `https://github.com/DelMiiYa/delmiios.git`).
 
 ---
@@ -16,7 +16,7 @@
 | **M2: Apps** | **Passed** (`npm run build` ✓) | **PASS** ([`review-m2.md`](./reviews/review-m2.md)) | 0 | **Completed** |
 | **M3: Experience** | **Passed** (`npm run build` ✓) | **PASS** ([`review-m3.md`](./reviews/review-m3.md)) | 0 | **Completed** |
 | **M4: Hardening (Tests)** | **Passed** (`71/71` unit tests ✓ + `9` E2E smoke specs) | Pending `.agents/reviews/review-m4.md` | 0 | **Tests Complete** |
-| **M4: Hardening (Docs)** | Pending UI Agent (`README.md`) | Pending `.agents/reviews/review-m4.md` | 0 | **Next Up** |
+| **M4: Hardening (Docs)** | **Passed** (`README.md` ✓, `npm run build` ✓) | Pending `.agents/reviews/review-m4.md` | 0 | **In Review** |
 
 ---
 
