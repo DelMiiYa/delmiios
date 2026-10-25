@@ -32,7 +32,10 @@ In **Milestone 3**, you will build the two flagship visual/interactive experienc
 2. `D:\delmiios\src\core\cursor.js` — **Custom Triangle Cursor & Canvas Trail Controller** (`CursorController`, `initCursor`, plus exported pure math functions)
 3. `D:\delmiios\src\main.js` — Initialize `initCRT(...)` and `initCursor(...)`, connect Boot / Restart / Sleep / Wake to `crtController.playPowerOn()` and `crtController.playPowerOff()`.
 4. `D:\delmiios\src\style.css` — Complete CRT monitor bezel, screen curvature, scanlines/vignette/flicker overlays, CRT power-on/off keyframe animations, custom cursor & canvas trail styles, theme bezel variables, responsive `<= 768px` bezel drop, and `@media (prefers-reduced-motion: reduce)` rules.
-5. Integration refinements (if needed) in `src/core/{boot,startMenu,taskbar,windowManager}.js` and `src/apps/{settings,terminal}.js`.
+5. Integration refinements (if needed) in `src/core/{boot,startMenu,taskbar,windowManager}.js` and `src/apps/{settings,terminal}.js`:
+   - Route sleep/wake hardware LED & power animations in `src/core/startMenu.js` and `src/main.js` through `crtController.setSleeping(bool)` / `crtController.playPowerOff()` / `crtController.playPowerOn()`.
+   - In `src/apps/terminal.js` (`open <app>` handler and autocomplete), dynamically read `windowManager.getRegisteredApps().map((a) => a.id)` when `windowManager` is present so any newly registered app is automatically discoverable by `open`.
+   - In `src/style.css`, fix `.wallpaper-desc` (`color: var(--text-secondary), #94a3b8;`) to `color: var(--text-secondary, #94a3b8);`.
 
 ---
 
