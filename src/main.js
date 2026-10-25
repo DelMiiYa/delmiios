@@ -8,6 +8,12 @@ import { createDesktopIcons } from './core/desktop.js';
 import { StartMenu } from './core/startMenu.js';
 import { createTaskbar } from './core/taskbar.js';
 import { runBootSequence } from './core/boot.js';
+import { aboutApp } from './apps/about.js';
+import { projectsApp } from './apps/projects.js';
+import { skillsApp } from './apps/skills.js';
+import { contactApp } from './apps/contact.js';
+import { terminalApp } from './apps/terminal.js';
+import { settingsApp } from './apps/settings.js';
 
 // Set system page title
 document.title = `${profile.name} — ${profile.system.osName}`;
@@ -69,6 +75,11 @@ function initOS() {
 
   // Instantiate Window Manager
   const windowManager = new WindowManager(windowLayer);
+
+  // Register Milestone 2 Desktop Applications
+  [aboutApp, projectsApp, skillsApp, contactApp, terminalApp, settingsApp].forEach((app) => {
+    windowManager.registerApp(app);
+  });
 
   // Restart Handler: replays boot sequence and restores desktop session
   const handleRestart = () => {
