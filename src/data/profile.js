@@ -118,6 +118,27 @@ export const profile = {
       repoUrl: "https://github.com/DelMiiYa/BurningUpp",
     },
     {
+      id: "rtoc-for-lnreader",
+      title: "RTOC for LNReader — EPUB Generator",
+      category: "minor project",
+      date: "2026",
+      status: "Maintained",
+      description:
+        "A Python script and high-performance EPUB generator for \"A Regressor's Tale of Cultivation\" tailored specifically for the LNReader mobile reading app.",
+      details:
+        "Forked and optimized for seamless reading in LNReader. Features automated chapter scraping, base64-embedded webfonts, clean EPUB3 spine structure to eliminate ghost chapters, ad-removal filters, and full compatibility with LNReader themes (Light, Dark, AMOLED) along with responsive font and padding sliders.",
+      tech: [
+        "Python",
+        "Playwright",
+        "AsyncIO",
+        "EPUB",
+        "Web Scraping",
+        "Automation",
+      ],
+      liveUrl: "",
+      repoUrl: "https://github.com/DelMiiYa/rtoc-for-lnreader",
+    },
+    {
       id: "delmiios",
       title: "DelMiiOS / CRT Portfolio (This Site)",
       category: "Interactive Portfolio",
@@ -253,6 +274,9 @@ export const profile = {
       "Firebase",
       "Cloud Firestore",
       "Machine Learning",
+      "Playwright",
+      "Web Scraping",
+      "Automation",
       "Accessibility",
       "TypeScript",
       "Vite",

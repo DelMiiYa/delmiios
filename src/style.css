@@ -1897,6 +1897,10 @@ input, textarea, select {
   font-weight: 600;
 }
 
+.explorer-folder-name {
+  text-transform: capitalize;
+}
+
 .explorer-content-split {
   flex: 1;
   display: flex;
