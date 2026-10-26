@@ -1,4 +1,4 @@
-# DelMiiOS (AetherOS v2.4 — Combined Edition)
+# DelMiiOS v2.1
 
 > A simulated retro-modern CRT desktop PC personal portfolio built with vanilla JavaScript, modern Vite, and **zero runtime dependencies**.
 
