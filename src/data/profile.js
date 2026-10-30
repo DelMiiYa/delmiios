@@ -139,6 +139,27 @@ export const profile = {
       repoUrl: "https://github.com/DelMiiYa/rtoc-for-lnreader",
     },
     {
+      id: "markdown2pdf",
+      title: "Markdown2PDF — Desktop Studio",
+      category: "Desktop Application",
+      date: "2026",
+      status: "Active",
+      description:
+        "A standalone desktop application for Windows and Linux that converts Markdown documents with complex tables, images, and Unicode/Thai typography into print-ready A4 PDFs.",
+      details:
+        "Engineered with Python, Tkinter, PyMuPDF, and headless Chromium for pixel-accurate print preview and high-fidelity Skia PDF rendering. Features a split-pane live workspace with syntax highlighting, automatic local relative image resolution with broken-image suppression, print-ready pagination controls (margins, base font size, Q&A/row break protection), and built-in typography support for Thai, mathematical symbols, and emojis.",
+      tech: [
+        "Python",
+        "Tkinter",
+        "PyMuPDF",
+        "Pillow",
+        "Markdown",
+        "Desktop Application",
+      ],
+      liveUrl: "",
+      repoUrl: "https://github.com/DelMiiYa/Markdown2PDF",
+    },
+    {
       id: "delmiios",
       title: "DelMiiOS / CRT Portfolio (This Site)",
       category: "Interactive Portfolio",
@@ -277,6 +298,9 @@ export const profile = {
       "Playwright",
       "Web Scraping",
       "Automation",
+      "Tkinter",
+      "PyMuPDF",
+      "Markdown",
       "Accessibility",
       "TypeScript",
       "Vite",
